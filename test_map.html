@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaflet-Geoman with Print Control</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <!-- Leaflet-Geoman CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-geoman-free@2.13.0/dist/leaflet-geoman.css" />
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <!-- Leaflet-Geoman JS -->
+  <script src="https://unpkg.com/leaflet-geoman-free@2.13.0/dist/leaflet-geoman.min.js"></script>
+  <!-- Leaflet Browser Print Plugin -->
+  <script src="https://unpkg.com/leaflet.browser.print/dist/leaflet.browser.print.min.js"></script>
+  <style>
+    /* Style for the map container */
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <script>
+    // Initialize the map
+    const map = L.map('map').setView([51.505, -0.09], 13);
+
+    // Add a Tile Layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Add Leaflet-Geoman controls
+    map.pm.addControls({
+      position: 'topleft',
+      drawMarker: true,
+      drawPolygon: true,
+      drawPolyline: true,
+      drawCircle: true,
+      drawRectangle: true,
+      editMode: true,
+      dragMode: true,
+      cutPolygon: true,
+      removalMode: true,
+    });
+
+    // Add print control
+    L.control.browserPrint({
+      position: 'topleft',
+      title: 'Print Map',
+    }).addTo(map);
+
+    // Listen for layer creation events
+    map.on('pm:create', (e) => {
+      console.log('Created layer:', e.layer);
+    });
+
+    // Example: Enable snapping for all layers
+    map.pm.setGlobalOptions({
+      snapDistance: 20,
+    });
+
+    // Example: Customize the path styles
+    map.pm.setPathOptions({
+      color: 'blue',
+      weight: 2,
+    });
+  </script>
+</body>
+</html>
