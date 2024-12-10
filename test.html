@@ -8,11 +8,14 @@
 <body>
   <div id="legend-container"></div>
 
+
+  
+
   <script>
     
 
 
-    fetch('https://ngdgis.sgs.gov.sa/ngdgis/rest/services/Geosciences/MODS/MapServer/legend?f=json')
+    fetch('https://ngdgis.sgs.gov.sa/ngdgis/rest/services/Geology/Geology_250K/MapServer/legend?f=json')
       .then(response => response.json())
       .then(data => {
         // Log the entire data to see its structure
@@ -42,7 +45,8 @@
           }
           mineral_legendHTML += `</ul>`;
         });
-
+        // console.log(JSON.stringify(mineral_legendHTML))
+        console.log(mineral_legendHTML)
         document.getElementById('legend-container').innerHTML = mineral_legendHTML;
       })
       .catch(err => {
