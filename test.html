@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legend Example</title>
+</head>
+<body>
+  <div id="legend-container"></div>
+
+  <script>
+    
+
+
+    fetch('https://ngdgis.sgs.gov.sa/ngdgis/rest/services/Geosciences/MODS/MapServer/legend?f=json')
+      .then(response => response.json())
+      .then(data => {
+        // Log the entire data to see its structure
+        console.log(data);
+
+        // Check if the 'layers' and 'legend' properties exist
+        if (!data.layers || data.layers.length === 0) {
+          document.getElementById('legend-container').innerHTML = '<p>No layers available.</p>';
+          return;
+        }
+
+        let mineral_legendHTML = '';
+        data.layers.forEach(layer => {
+          mineral_legendHTML += `<h5>${layer.layerName}</h5><ul>`;
+          if (layer.legend && Array.isArray(layer.legend)) {
+            layer.legend.forEach(item => {
+              const imageData = item.imageData;
+              const imgSrc = 'data:image/png;base64,' + imageData;
+              mineral_legendHTML += `
+                <li>
+                  <img src="${imgSrc}" alt="${item.label}" style="vertical-align: middle; margin-right: 10px;">
+                  ${item.label || "No Label"}
+                </li>`;
+            });
+          } else {
+            mineral_legendHTML += '<li>No legend items available for this layer.</li>';
+          }
+          mineral_legendHTML += `</ul>`;
+        });
+
+        document.getElementById('legend-container').innerHTML = mineral_legendHTML;
+      })
+      .catch(err => {
+        console.error('Error fetching legend:', err);
+        document.getElementById('legend-container').innerHTML = '<p>Error loading legend.</p>';
+      });
+  </script>
+</body>
+</html>
