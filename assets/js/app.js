@@ -218,7 +218,7 @@ function updateLayerControl() {
     map.removeControl(mylayercontrol);
   }
   const isMobile = window.innerWidth <= 768;
-  mylayercontrol = L.control.layers(baseLayers, overLays, { collapsed: isMobile }).addTo(map);
+  mylayercontrol = L.control.layers(baseLayers, overLays, { collapsed: true }).addTo(map);
   if(isMobile==true){
     animateSidebar();
   }
