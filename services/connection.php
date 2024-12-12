@@ -1,12 +1,11 @@
 <?php
-// $servername = "191.101.79.154";
 $servername = "localhost";
-$username = "u460794712_vaallday_DB";
-$dbname = "u460794712_vaallday_DB";
-$password = "Vaallday@123";
+$username = "u460794712_1stech_DB";
+$dbname = "u460794712_1stech_DB";
+$password = "1stechdb_123@";
 
 // Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new pg_connect($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {

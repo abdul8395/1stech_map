@@ -3,7 +3,7 @@ var attempt = 3; // Variable to count number of attempts.
 function validate(){
 var username = document.getElementById("vausername").value;
 var password = document.getElementById("vapassword").value;
-if ( username == "VA_ADMIN" && password == "VA_ADMIN@justus"){
+if ( username == "1stech" && password == "1stech@123"){
 alert ("Login successfully");
 window.location = "admin__Home.html"; // Redirecting to other page.
 return false;
