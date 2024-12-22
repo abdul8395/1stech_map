@@ -6,6 +6,7 @@ var drawcontrol_status=false
 var territories_data 
 var VA_electric_flyr
 var google_sunroof=0
+var loca_report_btn_status=false
 var dark  = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png');
 // var dark  = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png');
 
@@ -499,9 +500,14 @@ var circlemarker
 // });
 
 map.on('click', function(e) {
+
+
   
   console.log(e.latlng.lat + ", " + e.latlng.lng)
   if(drawcontrol_status == false){
+    // if(loca_report_btn_status == true){
+    //   $('#reportModal').modal('show');
+    // }
     var currZoom = map.getZoom();
     if(currZoom >= 17){
       circlemarker=L.circle([e.latlng.lat, e.latlng.lng], 0).addTo(map)
@@ -575,22 +581,105 @@ setTimeout(() => {
 
 
 
+var drawnItems = new L.FeatureGroup();
+
+
+var drawControl =new L.Control.Draw({
+  draw: {
+    marker: true,
+    circle: false,
+    circlemarker: false,
+    rectangle: false,
+    polyline:false,
+    polygon: false
+    // {
+    //   allowIntersection: true,
+    //   showArea: true
+    // }
+  }
+});
+
+
+map.addLayer(drawnItems);
+map.addControl(drawControl);
+
+
+
+map.on(L.Draw.Event.CREATED, function (event) {
+
+  var getdrawnlayerType = event.layerType
+  var layer = event.layer; // The created layer
+  
+  if(layer instanceof L.Circle){
+    var cradius = layer.getRadius(); 
+    const radius = layer.getRadius(); // Retrieve the radius
+    const center = layer.getLatLng(); // Retrieve the center
+    console.log(`Circle created with radius: ${radius} meters at center: ${center}`);
+  }
+
+  if (getdrawnlayerType == 'marker') {
+
+    console.log("marker draw completed")
+    console.log(layer._latlng.lat)
+
+
+    fetch("https://nominatim.openstreetmap.org/search.php?q="+layer._latlng.lat+","+layer._latlng.lng+"&polygon_geojson=1&format=json")
+      .then(response => response.json())
+      .then(j => {
+        var address=j[0].display_name
+        console.log(address)
+        var schemeName=$("#schemeName").val()
+        $("#loc_name").text(schemeName);
+        $("#loc_address").text(address);
+        $("#loc_lat").text(layer._latlng.lat);
+        $("#loc_lng").text(layer._latlng.lng);
+
+   
+
+
+        $('#reportModal').modal('show');
+      })
+
+   
+  }
+})
+
+
+
+
+function printReport() {
+  var content = document.getElementById("modalContent").innerHTML; // Get modal content
+  var printWindow = window.open('', '', 'height=700,width=900'); // Open a new print window
+  printWindow.document.write('<html><head><title>Print Report</title>');
+  printWindow.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">');
+  printWindow.document.write('</head><body>');
+  printWindow.document.write(content); // Insert modal content
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.print(); // Trigger print
+}
 
 
 
 
 
 
+$("#reportModal").on("hide.bs.modal", function(){
+  console.log("reportModal closed!");
+  loca_report_btn_status=false
+  // map.pm.Draw.disable();
+  // your function after closing modal goes here
+})
 
 
-
-
-
-
-
-
-
-
+$("#loc_report_drawmarker").click(function(){
+  loca_report_btn_status=true
+  $('.leaflet-popup-pane .leaflet-draw-tooltip').show();
+  drawnItems.clearLayers();
+  $('.leaflet-draw-draw-marker')[0].click()
+  // $('.leaflet-pm-icon-marker').click()
+  $("#schemeInfoModal").modal("hide");
+});
 
 
 $("#about-btn").click(function() {
@@ -658,4 +747,83 @@ function sidebarClick(id) {
     map.invalidateSize();
   }
 }
+
+
+
+
+
+
+    // Style for the highlighted province
+    const highlightStyle_prov = {
+      // fillColor: '#1E90FF',
+      // opacity: 1,
+      // weight: 2,
+      // color: 'white',
+      dashArray: '3',
+      // fillOpacity: 0.6
+      weight: 2,
+      color: 'black',
+      // dashArray: '',
+      fillOpacity: 0.3
+  };
+
+  // Dropdown reference
+  const prov_dropdown = document.getElementById("provinceDropdown");
+
+  // Populate dropdown dynamically
+  provinces_geojson.features.forEach((feature, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.text = feature.properties.name;
+      prov_dropdown.appendChild(option);
+  });
+
+  let currentLayer; // To hold the selected province layer
+
+  // Function to clear previously selected province
+  function clearPreviousSelection() {
+      if (currentLayer) {
+          map.removeLayer(currentLayer);
+      }
+  }
+
+  // Highlight selected province when dropdown changes
+  prov_dropdown.addEventListener("change", function () {
+      const selectedIndex = parseInt(this.value);
+      const selectedFeature = provinces_geojson.features[selectedIndex];
+
+      clearPreviousSelection(); // Remove any previously added layer
+
+      // Add only the selected province
+      currentLayer = L.geoJSON(selectedFeature, {
+          style: highlightStyle_prov
+      }).addTo(map);
+
+      // Zoom to the selected feature
+      const bounds = currentLayer.getBounds();
+      map.fitBounds(bounds);
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -22,7 +22,12 @@
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"> -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" crossorigin="" />
 
-    <link rel="stylesheet" href="assets/css/app.css">
+    <!-- <link rel="stylesheet" href="assets/css/app.css"> -->
+
+      <!-- Chart.js -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+      <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   </head>
 
   <body>
@@ -62,15 +67,304 @@
           <div class="panel panel-default sidebar_background" id="features">
             <div class="panel-heading sidebar_background">
               <h3 class="panel-title" >TOC
-              <button type="button" style="margin-right: 5px !important;" class="btn btn-xs btn-warning pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
+                <button type="button" style="margin-right: 5px !important;" class="btn btn-xs btn-warning pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button>
+              </h3>
             </div>
 
             <div  class="panel-body" >
               <div class="container" >
                 <div class="row" style="max-width: 200px;">
+
+                  <select class="styled-province_select" id="provinceDropdown">
+                    <option value="" selected disabled>Select a Province</option>
+                    <!-- Options dynamically populated -->
+                    <!-- <option default="" selected="" hidden="" value="0: null">Select Province</option>
+                    <option class="option" value="1: Object">Al-Baha</option>
+                    <option class="option" value="2: Object">Al-Jouf</option>
+                    <option class="option" value="3: Object">Al-Madinah Al-Munawarah</option>
+                    <option class="option" value="4: Object">Al-Qassim</option>
+                    <option class="option" value="5: Object">Aseer</option>
+                    <option class="option" value="6: Object">Eastern Province</option>
+                    <option class="option" value="7: Object">Hail</option>
+                    <option class="option" value="8: Object">Jazan</option>
+                    <option class="option" value="9: Object">Makkah</option>
+                    <option class="option" value="10: Object">Northern Borders</option>
+                    <option class="option" value="11: Object">Riyadh</option>
+                    <option class="option" value="12: Object">Tabouk</option> -->
+                  </select>
+
                   <div class="col-12">
-                      <button type="button" class="btn btn-warning btn-block" id="btnGetLoc"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.319 1.319 0 0 0-.37.265.301.301 0 0 0-.057.09V14l.002.008a.147.147 0 0 0 .016.033.617.617 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.619.619 0 0 0 .146-.15.148.148 0 0 0 .015-.033L12 14v-.004a.301.301 0 0 0-.057-.09 1.318 1.318 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465-1.281 0-2.462-.172-3.34-.465-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411z"></path></svg>Current Location</button>
+                    <button type="button" class="btn btn-warning btn-block" id="btnGetLoc_report" data-toggle="modal" data-target="#schemeInfoModal"><i class="fa fa-map-marker" ></i>&nbsp;Location Assesment Report</button>
                   </div>
+
+                  <div class="col-12">
+                    <button type="button" class="btn btn-warning btn-block" id="btnGetLoc"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-geo-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.319 1.319 0 0 0-.37.265.301.301 0 0 0-.057.09V14l.002.008a.147.147 0 0 0 .016.033.617.617 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.619.619 0 0 0 .146-.15.148.148 0 0 0 .015-.033L12 14v-.004a.301.301 0 0 0-.057-.09 1.318 1.318 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465-1.281 0-2.462-.172-3.34-.465-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411z"></path></svg>Current Location</button>
+                  </div>
+
+
+
+
+
+                  
+                    <!-- Modal -->
+                    <div id="schemeInfoModal" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-sm"> <!-- Larger modal -->
+                          <!-- Modal Content -->
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" style="color: rgb(244 13 13);">&times;</button>
+                                  <h4 class="modal-title">Enter Location Details</h4>
+                              </div>
+                              <div class="modal-body">
+                                  <form class="form-horizontal">
+                                      <!-- Scheme Name -->
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label" for="schemeName">Name</label>
+                                          <div class="col-sm-8">
+                                              <input type="text" id="schemeName" class="form-control" placeholder="Enter Name" value="Textile New industry">
+                                          </div>
+                                      </div>
+
+                                      <!-- Enter Cost -->
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label" for="schemeCost">Enter Cost</label>
+                                          <div class="col-sm-8">
+                                              <input type="text" id="schemeCost" class="form-control" placeholder="Enter Cost">
+                                          </div>
+                                      </div>
+
+
+                                      <!-- Draw Options -->
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label">Draw</label>
+                                          <div class="col-sm-3">
+                                              <label class="radio-inline">
+                                                  <input type="radio" name="drawOption" value="point" checked> Draw Point
+                                              </label>
+                                          </div>
+                                          <div class="col-sm-3">
+                                              <label class="radio-inline">
+                                                  <input type="radio" name="drawOption" value="polygon"> Draw Polygon
+                                              </label>
+                                          </div>
+                                      </div>
+
+                                      <!-- Latitude -->
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label" for="enterLat">Enter Lat</label>
+                                          <div class="col-sm-8">
+                                              <input type="text" id="enterLat" class="form-control" placeholder="Enter Latitude">
+                                          </div>
+                                      </div>
+
+                                      <!-- Longitude -->
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label" for="enterLon">Enter Lon</label>
+                                          <div class="col-sm-8">
+                                              <input type="text" id="enterLon" class="form-control" placeholder="Enter Longitude">
+                                          </div>
+                                      </div>
+                                  </form>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-warning" id="loc_report_drawmarker">ADD LOCATION ON MAP</button>
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!-- Modal -->
+                    <div id="reportModal" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-lg">
+
+                          <!-- Modal content-->
+                          <div class="modal-content" id="modalContent">
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" style="color: rgb(228, 8, 8);">&times;</button>
+                                  <!-- <h4 class="modal-title">Location Assessment Report</h4> -->
+                              </div>
+
+                              <div class="modal-body">
+                              
+                                 <!-- Report Content -->
+                                <div class="page-header">
+                                  <h2 class="text-center">Location Assessment Report for New Industry</h2>
+                                  <p class="text-center ptext">
+                                      1stech geospatial experts developed data sets and intuitive mapping tools that help our clients in informed decision-making.
+                                  </p>
+                                </div>
+
+                                <!-- Section: Location Overview -->
+                                <h4 class="section-title">1. Location Overview</h4>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <table class="table table-striped table-bordered">
+                                            <tr>
+                                                <td><b>Name</b></td>
+                                                <td><span id="loc_name"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Address</b></td>
+                                                <td><span id="loc_address"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Province</b></td>
+                                                <td>Al Riyadh</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Nearest Primary City</b></td>
+                                                <td>Riyadh</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Protected Area</b></td>
+                                                <td>No</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Overall Score</b></td>
+                                                <td>65 out of 100</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Latitude</b></td>
+                                                <td><span id="loc_lat"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Longitude</b></td>
+                                                <td><span id="loc_lng"></span></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <!-- <div id="loc_map"></div> -->
+                                        <div id=""><img src="assets/img/loc_map.png" alt="" height="315px" width="100%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Section: Key Indicators -->
+                                <h4 class="section-title">2. Key Indicators</h4>
+                                <div class="gauge-container">
+                                    <div class="gauge-box">
+                                        <div id="traffic-gauge"></div>
+                                        <div class="gauge-title">Traffic Congestion</div>
+                                    </div>
+                                    <div class="gauge-box">
+                                        <div id="crime-gauge"></div>
+                                        <div class="gauge-title">Crime Rate</div>
+                                    </div>
+                                    <div class="gauge-box">
+                                        <div id="land-cost-gauge"></div>
+                                        <div class="gauge-title">Land Cost</div>
+                                    </div>
+                                    <div class="gauge-box">
+                                        <div id="population-gauge"></div>
+                                        <div class="gauge-title">Population Density</div>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-hover indicator-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Indicator</th>
+                                            <th>Value</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>Highway Motorway</td>
+                                        <td>4.3KM</td>
+                                        <td>Well-connected road infrastructure</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Railroad</td>
+                                          <td>1134KM</td>
+                                          <td>Not Well-connected</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Airport</td>
+                                          <td>34KM</td>
+                                          <td>Well-connected</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Nearest Hospitals</td>
+                                          <td>8KM</td>
+                                          <td>Well-connected</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Gas Network</td>
+                                          <td>13KM</td>
+                                          <td>Well-connected</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Electricity Network</td>
+                                          <td>3KM</td>
+                                          <td>Well-connected</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Crime Rate</td>
+                                          <td>Low</td>
+                                          <td>Overall low crime rate, ensuring safety for industries.</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Land Use Survey</td>
+                                          <td>30% Industrial</td>
+                                          <td>Significant land dedicated to industrial use.</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Agricultural Potential</td>
+                                          <td>High</td>
+                                          <td>Fertile lands ideal for agro-based industries.</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Water Quality</td>
+                                          <td>Good</td>
+                                          <td>Availability of clean and sufficient water resources.</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Section: Existing Industries -->
+                                <h4 class="section-title">3. Existing Industries Breakdown in the Selected Area </h4>
+                                <canvas id="industryChart" class="chart-container"></canvas>
+
+                                <!-- Section: Land Use Survey -->
+                                <h4 class="section-title">4. Land Use Surveys in the Selected Area</h4>
+                                <canvas id="landUseChart" class="chart-container"></canvas>
+
+                                <!-- Section: Population Analysis -->
+                                <h4 class="section-title">5. Population Analysis Per Sq. Km in the Selected Area</h4>
+                                <canvas id="populationChart" class="chart-container"></canvas>
+
+                                <!-- Section: Conclusion -->
+                                <h4 class="section-title">6. Summary & Recommendations</h4>
+                                <p>
+                                    This assessment highlights the suitability of the location for a new industry based on existing infrastructure, population density, land use, and other key indicators.
+                                </p>
+                              </div>
+
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-success no-print" onclick="printReport()">Print Report</button>
+                                  <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                              </div>
+                          </div>
+
+                      </div>
+                    </div>
+                 
+                
+
+                  
 
                   <!-- gpt code -->
 
@@ -6020,6 +6314,9 @@
         </div>
       </div>
 
+
+      
+
       <div id="map">
         <div class="map-title"><b style="font-size: 12px;">©2024 Developed by</b>  <img src="assets/img/1stechsvg.svg" height="21" width="70" alt="">  </div>
         <!-- <div id="legenddiv" style="z-index: 999999;">
@@ -6047,6 +6344,10 @@
   
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" crossorigin=""></script>
 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
     <!-- Leaflet-Geoman JS -->
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
    
@@ -6055,6 +6356,8 @@
 
 
     <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
+
+  
     
     
     <link rel="stylesheet" href="https://ptma.github.io/Leaflet.Measure/src/leaflet.measure.css" />
@@ -6090,7 +6393,7 @@
 
 
    
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/ksa_provinces.js"></script>
     
 
        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9GR0oF71wisbzR6xuV1k6gbmEBQlkmOc&libraries=places"></script>
@@ -6098,6 +6401,18 @@
 
     <script>
 
+    const timestamp = new Date().getTime(); // Current timestamp
+    const script = document.createElement('script');
+    script.src = `assets/js/app.js?ts=${timestamp}`; // Append a unique timestamp
+    document.head.appendChild(script);
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = `assets/css/app.css?ts=${timestamp}`; // Append a unique timestamp
+
+    // Append the <link> element to the document head
+    document.head.appendChild(link);
 
         function checkScreenSize() {
             // Get the current screen width
@@ -6116,6 +6431,110 @@
         // Call the function when the page loads and on window resize
         // window.onload = checkScreenSize;
         // window.onresize = checkScreenSize;
+
+
+
+
+        
+
+    // var loc_map = L.map('loc_map').setView([24.5286, 46.4501], 7); // Coordinates for location center
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     attribution: '&copy; OpenStreetMap contributors'
+    // }).addTo(loc_map);
+    // const markerCoordinates = [layer._latlng.lat, layer._latlng.lng]; // Latitude and Longitude of the marker
+    //     var marker = L.marker(markerCoordinates).addTo(loc_map)
+    //         // .bindPopup('selected location.') // Add popup on marker
+    //         // .openPopup();
+    
+    //     // Fit Bounds to the Marker
+    //     loc_map.fitBounds([markerCoordinates], { padding: [50, 50] });
+    //     loc_map.setZoom(9);
+    // const markerCoordinates = [24.5286, 46.4501]; // Latitude and Longitude of the marker
+    
+    // var marker = L.marker(markerCoordinates).addTo(loc_map)
+        // .bindPopup('selected location.') // Add popup on marker
+        // .openPopup();
+
+    // Fit Bounds to the Marker
+    // loc_map.fitBounds([markerCoordinates], { padding: [50, 50] });
+    // loc_map.setZoom(9);
+
+    // Population Chart
+    const populationCtx = document.getElementById('populationChart').getContext('2d');
+    new Chart(populationCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Urban', 'Rural', 'Suburban'],
+            datasets: [{
+                label: 'Population Distribution Per Sq. Km',
+                data: [3500, 2000, 1300],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107']
+            }]
+        }
+    });
+
+    // Industry Breakdown Chart
+    const industryCtx = document.getElementById('industryChart').getContext('2d');
+    new Chart(industryCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Textile', 'Agriculture', 'IT', 'Mining', 'Others'],
+            datasets: [{
+                data: [30, 25, 15, 10, 20],
+                backgroundColor: ['#007bff', '#28a745', '#dc3545', '#17a2b8', '#6c757d']
+            }]
+        }
+    });
+
+    // Land Use Chart
+    const landUseCtx = document.getElementById('landUseChart').getContext('2d');
+    new Chart(landUseCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Industrial', 'Residential', 'Agricultural', 'Commercial'],
+            datasets: [{
+                data: [30, 40, 20, 10],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#17a2b8']
+            }]
+        }
+    });
+
+
+
+
+
+
+      // ApexCharts Gauges
+      function renderGauge(target, value, label) {
+            var options = {
+                chart: {
+                    type: 'radialBar',
+                },
+                series: [value],
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            size: '60%',
+                        },
+                        dataLabels: {
+                            name: { show: true, fontSize: '12px', offsetY: 15, text: label },
+                            value: { show: true, offsetY: -15 }
+                        }
+                    }
+                },
+                colors: ['#4e73df']
+            };
+            new ApexCharts(target, options).render();
+        }
+        renderGauge(document.querySelector("#traffic-gauge"), 65, 'Moderate');
+        renderGauge(document.querySelector("#crime-gauge"), 45, 'Low');
+        renderGauge(document.querySelector("#land-cost-gauge"), 75, 'High');
+        renderGauge(document.querySelector("#population-gauge"), 85, 'Dense');
+
+
+
+
+
     </script>
 
 
